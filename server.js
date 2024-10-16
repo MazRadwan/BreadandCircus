@@ -1,6 +1,5 @@
 const http = require("http");
 const path = require("path");
-const fs = require("fs");
 const routes = require("./routes");
 const myEmitter = require("./logEvents");
 const handleError = require("./errorHandler");
@@ -10,54 +9,13 @@ const weatherService = require("./weatherService");
 
 global.DEBUG = true;
 
-// Helper function to serve static files
-const serveStaticFile = (filePath, res) => {
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      handleError(err, res);
-      return;
-    }
-
-    const extname = path.extname(filePath);
-    let contentType = "text/html";
-
-    switch (extname) {
-      case ".js":
-        contentType = "text/javascript";
-        break;
-      case ".css":
-        contentType = "text/css";
-        break;
-      case ".png":
-        contentType = "image/png";
-        break;
-    }
-
-    res.writeHead(200, { "Content-Type": contentType });
-    res.end(content, "utf-8");
-  });
-};
-
+// Helper function for handling API routes and serving static content.
 const server = http.createServer((req, res) => {
   if (DEBUG) console.log("Request Url:", req.url);
   let filePath = path.join(__dirname, "views");
   let routeHandler;
 
-  // Serve static files from root, /assets, /styles, /scripts
-  if (req.url === "/index.js") {
-    serveStaticFile(path.join(__dirname, req.url), res);
-    return;
-  } else if (req.url.startsWith("/assets")) {
-    serveStaticFile(path.join(__dirname, req.url), res);
-    return;
-  } else if (req.url.startsWith("/styles")) {
-    serveStaticFile(path.join(__dirname, req.url), res);
-    return;
-  } else if (req.url.startsWith("/scripts")) {
-    serveStaticFile(path.join(__dirname, req.url), res);
-    return;
-  }
-
+  // API route for news data
   if (req.url.startsWith("/api/news")) {
     console.log("Fetching News Data...");
 
@@ -75,9 +33,9 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // API routes for sports data
+  // API route for sports data
   if (req.url.startsWith("/api/sports/mlb")) {
-    console.log("Fetching MLB Data..."); // Log when fetching data
+    console.log("Fetching MLB Data...");
 
     // Get current date in YYYY-MM-DD format
     const currentDate = new Date().toISOString().split("T")[0];
@@ -126,6 +84,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  // Static content routing (HTML pages)
   switch (req.url) {
     case "/":
       filePath = path.join(filePath, "index.html");
@@ -159,12 +118,10 @@ const server = http.createServer((req, res) => {
       return;
   }
 
+  // Handle the requested HTML page
   routeHandler(filePath, res);
   myEmitter.emit("routeAccessed", req.url);
 });
 
-server.listen(3000, () => {
-  console.log("Server running on port 3000");
-});
 
 module.exports = server;
