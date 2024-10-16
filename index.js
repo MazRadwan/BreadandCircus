@@ -1,5 +1,4 @@
 const server = require("./server");
 
-// server.listen(3000, () => {
-// //   console.log("Server running on port 3000");
-// });
+// Export the server for Vercel
+module.exports = server;
