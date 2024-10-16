@@ -9,7 +9,6 @@ const weatherService = require("./weatherService");
 
 global.DEBUG = true;
 
-// Helper function for handling API routes and serving static content.
 const server = http.createServer((req, res) => {
   if (DEBUG) console.log("Request Url:", req.url);
   let filePath = path.join(__dirname, "views");
@@ -37,7 +36,6 @@ const server = http.createServer((req, res) => {
   if (req.url.startsWith("/api/sports/mlb")) {
     console.log("Fetching MLB Data...");
 
-    // Get current date in YYYY-MM-DD format
     const currentDate = new Date().toISOString().split("T")[0];
 
     sportsService.fetchMLBData(currentDate, (data) => {
@@ -118,10 +116,14 @@ const server = http.createServer((req, res) => {
       return;
   }
 
-  // Handle the requested HTML page
-  routeHandler(filePath, res);
-  myEmitter.emit("routeAccessed", req.url);
+  // Check if routeHandler is valid before invoking it
+  if (typeof routeHandler === "function") {
+    routeHandler(filePath, res);
+    myEmitter.emit("routeAccessed", req.url);
+  } else {
+    res.writeHead(500, { "Content-Type": "text/html" });
+    res.end("<h1>500 Internal Server Error</h1>");
+  }
 });
 
-// No need to listen on a port, as Vercel handles this automatically.
 module.exports = server;
