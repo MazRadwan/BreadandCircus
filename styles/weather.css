@@ -1,0 +1,130 @@
+body {
+  font-family: "Frank Ruhl Libre", serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: white;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: black;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+  font-family: "Frank Ruhl Libre", serif;
+}
+
+/* Hover Effect for Nav Links */
+nav a:hover {
+  color: #5d6967;
+}
+
+.hero-container {
+  position: relative;
+}
+
+.hero-container img {
+  width: 100%;
+  height: auto;
+}
+
+.hero-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-mask h2 {
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 72px;
+}
+
+.oracle-section {
+  background-color: #5d6967;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.oracle-section h2 {
+  color: white;
+  font-family: "Inka BOLD", serif;
+  font-size: 32px;
+}
+
+.weather-input {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.weather-input input {
+  padding: 10px;
+  font-size: 16px;
+  width: 300px;
+}
+
+.weather-input button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #5d6967;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.weather-data-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.weather-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.weather-card h3 {
+  margin-top: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 36px;
+}
+.weather-card p {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-weight: 300;
+  color: #5d6967;
+}
+
+footer {
+  background-color: #5d6967;
+  text-align: center;
+  padding: 20px 0;
+  color: white;
+}

@@ -1,0 +1,165 @@
+Basic Styles body {
+  font-family: "Frank Ruhl Libre", serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header h1 {
+  font-family: "Frank Ruhl Libre", serif;
+  margin: 0;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: black;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+
+nav a {
+  text-decoration: none;
+  color: black;
+  font-family: "Frank Ruhl Libre", serif;
+}
+
+/* Hover Effect for Nav Links */
+nav a:hover {
+  color: #5d6967;
+}
+
+/* Hero Image Container */
+.hero-container {
+  position: relative;
+  text-align: center;
+  color: white;
+}
+
+.hero-container img {
+  width: 100%;
+  height: auto;
+}
+
+.hero-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-mask h2 {
+  font-family: "Inter", sans-serif;
+  font-size: 72pt;
+  margin: 0;
+}
+
+.sports-section {
+  background-color: #5d6967;
+  text-align: center;
+  padding: 20px 0;
+  color: white;
+}
+
+.sports-section h2 {
+  font-family: "Inka BOLD", serif;
+  font-size: 36pt;
+  margin: 0;
+}
+
+.sports-data {
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sports-card {
+  background-color: #ffffff;
+  padding: 20px;
+  margin: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 300px;
+}
+
+.sports-card h3 {
+  font-family: "Inter", sans-serif;
+  font-size: 24pt;
+  margin: 0;
+  color: black;
+}
+
+.sports-card p {
+  font-size: 14pt;
+  margin: 10px 0;
+  color: black;
+}
+
+footer {
+  background-color: #5d6967;
+  text-align: center;
+  padding: 20px 0;
+  color: white;
+  font-family: "Frank Ruhl Libre", serif;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-mask h2 {
+    font-size: 48pt;
+  }
+
+  .sports-section h2 {
+    font-size: 24pt;
+  }
+
+  .sports-card h3 {
+    font-size: 18pt;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-mask h2 {
+    font-size: 24pt;
+  }
+
+  .sports-section h2 {
+    font-size: 18pt;
+  }
+
+  .sports-card h3 {
+    font-size: 14pt;
+  }
+}
