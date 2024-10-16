@@ -1,5 +1,6 @@
 const http = require("http");
 const path = require("path");
+const fs = require("fs");
 const routes = require("./routes");
 const myEmitter = require("./logEvents");
 const handleError = require("./errorHandler");
@@ -9,27 +10,65 @@ const weatherService = require("./weatherService");
 
 global.DEBUG = true;
 
-// Helper function for handling API routes and serving static content.
+const serveStaticFile = (filePath, res) => {
+  const ext = path.extname(filePath);
+  let contentType = "text/html";
+
+  // Set appropriate content type based on file extension
+  switch (ext) {
+    case ".js":
+      contentType = "text/javascript";
+      break;
+    case ".css":
+      contentType = "text/css";
+      break;
+    case ".png":
+      contentType = "image/png";
+      break;
+    case ".jpg":
+      contentType = "image/jpeg";
+      break;
+    case ".ico":
+      contentType = "image/x-icon";
+      break;
+  }
+
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.writeHead(404, { "Content-Type": "text/html" });
+      res.end("<h1>404 Not Found</h1>");
+    } else {
+      res.writeHead(200, { "Content-Type": contentType });
+      res.end(content, "utf-8");
+    }
+  });
+};
+
+// Helper function for handling API routes and serving static content
 const server = http.createServer((req, res) => {
   if (DEBUG) console.log("Request Url:", req.url);
   let filePath = path.join(__dirname, "views");
   let routeHandler;
 
+  // Serve static files from "public" folder
+  if (req.url.startsWith("/assets") || req.url.startsWith("/styles") || req.url.startsWith("/scripts")) {
+    const staticFilePath = path.join(__dirname, "public", req.url);
+    serveStaticFile(staticFilePath, res);
+    return;
+  }
+
   // API route for news data
   if (req.url.startsWith("/api/news")) {
     console.log("Fetching News Data...");
 
-    newsService
-      .getNews()
-      .then((data) => {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(data));
-      })
-      .catch((err) => {
-        console.error("Error fetching news data:", err);
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "Failed to fetch news data" }));
-      });
+    newsService.getNews().then((data) => {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(data));
+    }).catch((err) => {
+      console.error("Error fetching news data:", err);
+      res.writeHead(500, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ error: "Failed to fetch news data" }));
+    });
     return;
   }
 
@@ -37,9 +76,7 @@ const server = http.createServer((req, res) => {
   if (req.url.startsWith("/api/sports/mlb")) {
     console.log("Fetching MLB Data...");
 
-    // Get current date in YYYY-MM-DD format
     const currentDate = new Date().toISOString().split("T")[0];
-
     sportsService.fetchMLBData(currentDate, (data) => {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(data));
@@ -73,11 +110,7 @@ const server = http.createServer((req, res) => {
   }
 
   // API route for joke data
-  if (
-    req.url === "/jokes" &&
-    req.headers.accept &&
-    req.headers.accept.includes("application/json")
-  ) {
+  if (req.url === "/jokes" && req.headers.accept && req.headers.accept.includes("application/json")) {
     console.log("Fetching Joke Data...");
 
     routes.randomJoke(req, res);
@@ -122,6 +155,5 @@ const server = http.createServer((req, res) => {
   routeHandler(filePath, res);
   myEmitter.emit("routeAccessed", req.url);
 });
-
 
 module.exports = server;
