@@ -1,7 +1,7 @@
 const https = require("https");
 
 const fetchMLBData = (date, callback) => {
-  const API_KEY = "fa257915face43338482a2750621f91a";
+  const API_KEY = process.env.SPORTS_API_KEY;
   const url = `https://api.sportsdata.io/v3/mlb/scores/json/GamesByDate/${date}?key=${API_KEY}`;
 
   const req = https.get(url, (resp) => {
@@ -19,7 +19,6 @@ const fetchMLBData = (date, callback) => {
   });
 
   req.setTimeout(5000, () => {
-    // 5 seconds timeout
     req.abort();
     console.error("Request timed out");
   });
