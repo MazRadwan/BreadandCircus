@@ -19,6 +19,7 @@ const serveStaticFile = (filePath, res) => {
     case ".js":
       contentType = "text/javascript";
       break;
+      git;
     case ".css":
       contentType = "text/css";
       break;
