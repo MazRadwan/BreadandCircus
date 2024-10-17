@@ -1,18 +1,64 @@
 const http = require("http");
 const path = require("path");
+const fs = require("fs");
 const routes = require("./routes");
 const myEmitter = require("./logEvents");
-const handleError = require("./errorHandler");
 const sportsService = require("./sportsService");
 const newsService = require("./newsService");
 const weatherService = require("./weatherService");
 
 global.DEBUG = true;
 
+// Function to serve static files
+const serveStaticFile = (filePath, res) => {
+  const extname = path.extname(filePath);
+  let contentType = "text/html";
+
+  // Set content type based on file extension
+  switch (extname) {
+    case ".js":
+      contentType = "text/javascript";
+      break;
+    case ".css":
+      contentType = "text/css";
+      break;
+    case ".png":
+      contentType = "image/png";
+      break;
+    case ".jpg":
+      contentType = "image/jpeg";
+      break;
+    case ".ico":
+      contentType = "image/x-icon";
+      break;
+  }
+
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.writeHead(404, { "Content-Type": "text/html" });
+      res.end("<h1>404 Not Found</h1>");
+    } else {
+      res.writeHead(200, { "Content-Type": contentType });
+      res.end(content, "utf-8");
+    }
+  });
+};
+
 const server = http.createServer((req, res) => {
   if (DEBUG) console.log("Request Url:", req.url);
   let filePath = path.join(__dirname, "views");
   let routeHandler;
+
+  // Serve static files from "public" folder
+  if (
+    req.url.startsWith("/assets") ||
+    req.url.startsWith("/styles") ||
+    req.url.startsWith("/scripts")
+  ) {
+    const staticFilePath = path.join(__dirname, "public", req.url);
+    serveStaticFile(staticFilePath, res);
+    return;
+  }
 
   // API route for news data
   if (req.url.startsWith("/api/news")) {
@@ -101,13 +147,8 @@ const server = http.createServer((req, res) => {
       routeHandler = routes.weatherPage;
       break;
     case "/jokes":
-      if (req.method === "GET") {
-        filePath = path.join(filePath, "jokes.html");
-        routeHandler = routes.jokesPage;
-      } else {
-        res.writeHead(405, { "Content-Type": "text/html" });
-        res.end("<h1>405 Method Not Allowed</h1>", "utf-8");
-      }
+      filePath = path.join(filePath, "jokes.html");
+      routeHandler = routes.jokesPage;
       break;
     default:
       res.writeHead(404, { "Content-Type": "text/html" });
